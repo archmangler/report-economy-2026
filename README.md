@@ -2,7 +2,9 @@
 ## Manim-based Economic Data Visualization Tool
 
 ### Overview
-This script creates a professional-grade animated presentation of global economic projections for 2026, similar to 3Blue1Brown's visualization style. It uses the Manim library to generate smooth animations and transitions between different economic metrics and country groupings.
+* This script creates a professional-grade animated presentation of global economic projections for 2026. 
+* It uses the Manim library to generate smooth animations and transitions between different economic metrics and country groupings.
+* The concept of this project is create an ongoing economic and geopolitical projection incorporating various material factors which affect the global economy, like military power, population size, advent of technological advances and trends. The final report is meant to be a realistic synthesis of complex factors required to build a holistic view of the geopolitical-economic landscape for coming years..
 
 ### Data Sources
 Currently using placeholder/example data. To use actual projections, update the data dictionary with figures from:
