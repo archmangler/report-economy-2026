@@ -6,15 +6,21 @@ class GlobalEconomyPresentation(Scene):
         # Configuration
         self.camera.background_color = "#1C1C1C"
         
+        # Main title position configuration
+        MAIN_TITLE_BUFF = 1.5  # Increased buffer space for main title
+        
         # Title slide
         self.create_title_slide()
         self.wait(2)
+        
+        # Clear the title before proceeding
+        self.clear()
         
         # Introduction animation
         self.create_intro_animation()
         self.wait(1)
         
-        # GDP Projections
+        # GDP Projections with adjusted positioning
         self.show_gdp_projections()
         self.wait(1)
         
@@ -33,15 +39,15 @@ class GlobalEconomyPresentation(Scene):
     def create_title_slide(self):
         title = Text("The Global Economy in 2026", font_size=60)
         subtitle = Text("Projections and Trends", font_size=40)
-        subtitle.next_to(title, DOWN)
+        subtitle.next_to(title, DOWN, buff=0.5)
         
         group = VGroup(title, subtitle)
+        group.move_to(ORIGIN)  # Center the group
         
         self.play(
             Write(title, run_time=2),
             FadeIn(subtitle, run_time=2)
         )
-        self.play(group.animate.scale(0.8).to_corner(UP))
 
     def create_intro_animation(self):
         # Create 3D globe
@@ -56,7 +62,7 @@ class GlobalEconomyPresentation(Scene):
         self.play(FadeOut(sphere))
 
     def show_gdp_projections(self):
-        # Create animated bar chart with expanded dataset
+        # Data remains the same
         data = {
             # Major Economies
             "USA": [21, 23, 25],
@@ -79,6 +85,11 @@ class GlobalEconomyPresentation(Scene):
             "Vietnam": [0.3, 0.4, 0.5],
             "Cambodia": [0.03, 0.04, 0.05]
         }
+
+        # Create section title
+        section_title = Text("GDP Projections", font_size=48)
+        section_title.to_edge(UP, buff=0.5)
+        self.play(Write(section_title))
         
         # Chart 1: Major Economies
         major_economies = {k: data[k] for k in ["USA", "China", "Japan", "Germany", "India"]}
@@ -86,50 +97,21 @@ class GlobalEconomyPresentation(Scene):
             values=[major_economies[country][0] for country in major_economies.keys()],
             bar_names=list(major_economies.keys()),
             y_range=[0, 30, 5],
-            y_length=6,
-            x_length=10,
-            x_axis_config={"font_size": 36},
-            label_constructor=Text
-        )
+            y_length=5,  # Reduced height
+            x_length=9,  # Reduced width
+            x_axis_config={"font_size": 32}  # Smaller font
+        ).scale(0.9)  # Scale down the entire chart
         
-        title1 = Text("Major Economies GDP (Trillion USD)", font_size=40)
-        title1.to_edge(UP)
+        chart_title1 = Text("Major Economies (Trillion USD)", font_size=36)
+        chart_title1.next_to(section_title, DOWN, buff=0.3)
         
-        # Chart 2: Emerging Economies
-        emerging_economies = {k: data[k] for k in ["Russia", "Brazil", "Turkiye", "Kazakhstan"]}
-        chart2 = BarChart(
-            values=[emerging_economies[country][0] for country in emerging_economies.keys()],
-            bar_names=list(emerging_economies.keys()),
-            y_range=[0, 5, 1],
-            y_length=6,
-            x_length=10,
-            x_axis_config={"font_size": 36},
-            label_constructor=Text
-        )
+        # Position chart below its title
+        chart1.next_to(chart_title1, DOWN, buff=0.5)
         
-        title2 = Text("Emerging Economies GDP (Trillion USD)", font_size=40)
-        title2.to_edge(UP)
-
-        # Chart 3: ASEAN Economies
-        asean_economies = {k: data[k] for k in ["Indonesia", "Thailand", "Singapore", 
-                                               "Malaysia", "Vietnam", "Cambodia"]}
-        chart3 = BarChart(
-            values=[asean_economies[country][0] for country in asean_economies.keys()],
-            bar_names=list(asean_economies.keys()),
-            y_range=[0, 2, 0.2],
-            y_length=6,
-            x_length=10,
-            x_axis_config={"font_size": 32},
-            label_constructor=Text
-        )
-        
-        title3 = Text("ASEAN Economies GDP (Trillion USD)", font_size=40)
-        title3.to_edge(UP)
-
-        # Animation sequence for Chart 1: Major Economies
+        # Animation sequence for Chart 1
         self.play(
             Create(chart1),
-            Write(title1)
+            Write(chart_title1)
         )
         
         for year_idx in range(1, 3):
@@ -137,31 +119,62 @@ class GlobalEconomyPresentation(Scene):
             self.play(chart1.animate.change_bar_values(new_values))
             self.wait(1)
         
-        # Transition to Chart 2: Emerging Economies
+        # Clean up first chart
         self.play(
             FadeOut(chart1),
-            FadeOut(title1)
+            FadeOut(chart_title1)
         )
+        
+        # Chart 2: Emerging Economies
+        emerging_economies = {k: data[k] for k in ["Russia", "Brazil", "Turkiye", "Kazakhstan"]}
+        chart2 = BarChart(
+            values=[emerging_economies[country][0] for country in emerging_economies.keys()],
+            bar_names=list(emerging_economies.keys()),
+            y_range=[0, 5, 1],
+            y_length=5,
+            x_length=9,
+            x_axis_config={"font_size": 32}
+        ).scale(0.9)
+        
+        chart_title2 = Text("Emerging Economies (Trillion USD)", font_size=36)
+        chart_title2.next_to(section_title, DOWN, buff=0.3)
+        chart2.next_to(chart_title2, DOWN, buff=0.5)
         
         self.play(
             Create(chart2),
-            Write(title2)
+            Write(chart_title2)
         )
         
         for year_idx in range(1, 3):
             new_values = [emerging_economies[country][year_idx] for country in emerging_economies.keys()]
             self.play(chart2.animate.change_bar_values(new_values))
             self.wait(1)
-
-        # Transition to Chart 3: ASEAN Economies
+        
+        # Clean up second chart
         self.play(
             FadeOut(chart2),
-            FadeOut(title2)
+            FadeOut(chart_title2)
         )
+        
+        # Chart 3: ASEAN Economies
+        asean_economies = {k: data[k] for k in ["Indonesia", "Thailand", "Singapore", 
+                                               "Malaysia", "Vietnam", "Cambodia"]}
+        chart3 = BarChart(
+            values=[asean_economies[country][0] for country in asean_economies.keys()],
+            bar_names=list(asean_economies.keys()),
+            y_range=[0, 2, 0.2],
+            y_length=5,
+            x_length=9,
+            x_axis_config={"font_size": 28}  # Even smaller font for longer names
+        ).scale(0.9)
+        
+        chart_title3 = Text("ASEAN Economies (Trillion USD)", font_size=36)
+        chart_title3.next_to(section_title, DOWN, buff=0.3)
+        chart3.next_to(chart_title3, DOWN, buff=0.5)
         
         self.play(
             Create(chart3),
-            Write(title3)
+            Write(chart_title3)
         )
         
         for year_idx in range(1, 3):
@@ -172,7 +185,8 @@ class GlobalEconomyPresentation(Scene):
         # Final cleanup
         self.play(
             FadeOut(chart3),
-            FadeOut(title3)
+            FadeOut(chart_title3),
+            FadeOut(section_title)
         )
 
     def show_global_trade(self):
